@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Equipamentos Integrados - iPontoWeb</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        /* Transição suave para ocultar/mostrar elementos */
+        .item-row, .card-section {
+            transition: all 0.3s ease-in-out;
+        }
+        /* Transição genérica de imagens */
+        img.transition-all {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* Ajuste para bordas arredondadas nos últimos itens */
+        .divide-y > div:last-child {
+            border-bottom-left-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+        }
+        
+        /* Scroll Suave para Mobile */
+        .overflow-x-auto {
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+
+        /* --- ESTILOS DE ZOOM --- */
+
+        /* Overlay "Fantasma" para o Zoom Mobile - Inicialmente invisível */
+        #zoom-overlay {
+            position: fixed;
+            z-index: 9999;
+            background-color: transparent;
+            cursor: zoom-out;
+            object-fit: contain;
+            pointer-events: none; /* Ignora cliques enquanto escondido */
+            opacity: 0;
+            /* A transição será controlada via JS para o efeito de "abrir" */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.35));
+            transform-origin: center center;
+        }
+        
+        /* Classe ativa para mostrar o overlay */
+        #zoom-overlay.active {
+            pointer-events: auto;
+            opacity: 1;
+        }
+
+        /* Desktop: Escala no lugar, mantém comportamento anterior */
+        .img-zoom-desktop {
+            transform: scale(4);
+            z-index: 50;
+            position: relative;
+            background-color: white;
+            border-radius: 0.5rem; /* rounded-lg */
+            border: 1px solid #e2e8f0; /* border-slate-200 */
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); /* shadow-xl */
+            cursor: zoom-out;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen pb-20">
+
+    <!-- Header Section -->
+    <header class="bg-white w-full pt-8 pb-6 text-center flex flex-col items-center border-b border-slate-200 shadow-sm mb-8">
+        <!-- Logo com Link -->
+        <a href="https://www.inspell.com.br/ipontoconnect" target="_blank" class="hover:opacity-80 transition-opacity" title="Visitar site">
+            <img 
+                src="./assets/logo_connect_01.png" 
+                alt="iPontoWeb Connect" 
+                class="h-10 object-contain"
+                onerror="this.onerror=null; this.src='https://placehold.co/300x80/ffffff/1e293b?text=iPontoWeb+Connect';"
+            >
+        </a>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 pt-12 space-y-6">
+        
+        <!-- Top Bar: Título e Filtros (Com Accordion Mobile) -->
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 pb-2">
+            
+            <!-- Container do Título e Botão Toggle -->
+            <div class="flex justify-between items-center w-full lg:w-auto">
+                <h2 class="text-xl md:text-2xl font-bold text-slate-900 text-left">Lista de Equipamentos Integrados</h2>
+                
+                <!-- Botão Toggle Mobile -->
+                <button 
+                    onclick="toggleFilters()" 
+                    class="lg:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200"
+                    aria-label="Filtrar"
+                >
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-medium">Filtros</span>
+                        <i data-lucide="filter" class="w-5 h-5"></i>
+                    </div>
+                </button>
+            </div>
+            
+            <!-- Container dos Filtros (Collapsible no Mobile) -->
+            <!-- max-h-0 e opacity-0 escondem por padrão no mobile. lg: classes mostram no desktop -->
+            <div id="filters-container" class="w-full lg:w-auto overflow-hidden transition-all duration-300 max-h-0 opacity-0 lg:max-h-none lg:opacity-100 lg:overflow-visible">
+                <div class="flex flex-col sm:flex-row gap-3 pt-2 lg:pt-0">
+                    <!-- Filtro Fabricante -->
+                    <div class="flex items-center gap-3 bg-white p-2 rounded-lg shadow-sm border border-slate-200 flex-1 lg:flex-none">
+                        <label for="filterFabricante" class="text-sm font-semibold text-slate-600 pl-2 whitespace-nowrap">
+                           <i data-lucide="factory" class="w-4 h-4 inline mr-1"></i> Fabricante:
+                        </label>
+                        <select id="filterFabricante" onchange="applyFilters()" class="bg-slate-50 border border-slate-300 text-slate-700 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full lg:w-40 p-2 outline-none cursor-pointer hover:bg-slate-100 transition-colors">
+                            <option value="todos">Todos</option>
+                            <option value="Control ID">Control ID</option>
+                            <option value="TopData">TopData</option>
+                            <option value="Evo">Evo</option>
+                            <option value="Dixi">Dixi</option>
+                            <option value="Henry">Henry</option>
+                        </select>
+                    </div>
+
+                    <!-- Filtro Biometria -->
+                    <div class="flex items-center gap-3 bg-white p-2 rounded-lg shadow-sm border border-slate-200 flex-1 lg:flex-none">
+                        <label for="filterBiometria" class="text-sm font-semibold text-slate-600 pl-2 whitespace-nowrap">
+                            <i data-lucide="scan-face" class="w-4 h-4 inline mr-1"></i> Gerenciamento Biométrico:
+                        </label>
+                        <select id="filterBiometria" onchange="applyFilters()" class="bg-slate-50 border border-slate-300 text-slate-700 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full lg:w-40 p-2 outline-none cursor-pointer hover:bg-slate-100 transition-colors">
+                            <option value="todos">Todos</option>
+                            <option value="Completo">Completo</option>
+                            <option value="Parcial">Parcial</option>
+                            <option value="Não realizado">Não realizado</option>
+                            <option value="Não se aplica">Não se aplica</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 1: Coletores de Dados (REP-P / Equipamentos) -->
+        <div class="card-section bg-white rounded-xl shadow-sm border border-slate-100">
+            <!-- Card Header -->
+            <div class="px-8 py-6 border-b border-slate-100 rounded-t-xl bg-white relative z-10">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="cloud" class="w-6 h-6 text-blue-600 fill-blue-600/10"></i>
+                    <h3 class="text-lg font-bold text-blue-600">Coletores de Dados (REP-P)</h3>
+                </div>
+            </div>
+
+            <!-- Scrollable Container for Table -->
+            <!-- Adicionado touch-pan-x para melhor resposta ao toque -->
+            <div class="overflow-x-auto custom-scrollbar rounded-b-xl touch-pan-x pb-2">
+                <div class="min-w-[1024px]"> <!-- Largura mínima forçada para scroll -->
+                    <!-- Table Header -->
+                    <!-- Alterado border-slate-200 para border-slate-100 (Mais claro) -->
+                    <div class="grid grid-cols-12 px-8 py-4 bg-white text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 gap-2 relative z-0">
+                        <div class="col-span-1 text-center">Equip.</div>
+                        <div class="col-span-2">Fabricante</div>
+                        <div class="col-span-2">Modelo</div>
+                        <div class="col-span-5">Tipo de Identificação</div>
+                        <div class="col-span-2 text-right md:text-left">Gerenciamento Biométrico</div>
+                    </div>
+
+                    <!-- List Items -->
+                    <!-- Alterado divide-slate-200 para divide-slate-100 (Mais claro) -->
+                    <div class="divide-y divide-slate-100" id="list-repp">
+                        
+                        <!-- Item 1: ControlID iDFace -->
+                        <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Control ID" data-biometria="Completo">
+                            <div class="col-span-1 flex justify-center relative">
+                                <!-- Wrapper fixo para preservar espaço -->
+                                <div class="w-10 h-10 relative">
+                                    <img 
+                                        src="./assets/img_idface.png" 
+                                        alt="iDFace" 
+                                        title="Clique para ampliar"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        onclick="toggleZoom(this)"
+                                        onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=ID';"
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-span-2 font-semibold text-slate-900">
+                                <a href="https://www.controlid.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Control ID</a>
+                            </div>
+                            <div class="col-span-2 text-slate-700 font-medium">iDFace</div>
+                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
+                                <span>Facial, QRCode, Prox, Teclado</span>
+                                <!-- Tooltip Content -->
+                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    <!-- Seta do Tooltip -->
+                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                </div>
+                            </div>
+                            <div class="col-span-2 relative">
+                                <!-- Badge com Tooltip Completo -->
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help">
+                                    <i data-lucide="check-circle-2" class="w-3 h-3"></i> Completo
+                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                        <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Item 2: ControlID iDFlex -->
+                        <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Control ID" data-biometria="Não realizado">
+                            <div class="col-span-1 flex justify-center relative">
+                                <div class="w-10 h-10 relative">
+                                    <img 
+                                        src="assets/img_idflex.png" 
+                                        alt="iDFlex" 
+                                        title="Clique para ampliar"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        onclick="toggleZoom(this)"
+                                        onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=ID';"
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-span-2 font-semibold text-slate-900">
+                                <a href="https://www.controlid.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Control ID</a>
+                            </div>
+                            <div class="col-span-2 text-slate-700 font-medium">iDFlex</div>
+                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
+                                <span>Digital, Prox e Teclado</span>
+                                <!-- Tooltip Content -->
+                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    <!-- Seta do Tooltip -->
+                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                </div>
+                            </div>
+                            <div class="col-span-2 relative">
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
+                                    Não realizado
+                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                        <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Item 3: TopData Inner Ponto 4 -->
+                        <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="TopData" data-biometria="Não realizado">
+                            <div class="col-span-1 flex justify-center relative">
+                                <div class="w-10 h-10 relative">
+                                    <img 
+                                        src="assets/img_inner4.png" 
+                                        alt="Inner Ponto 4" 
+                                        title="Clique para ampliar"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        onclick="toggleZoom(this)"
+                                        onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=Top';"
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-span-2 font-semibold text-slate-900">
+                                <a href="https://www.topdata.com.br" target="_blank" class="hover:text-blue-600 transition-colors">TopData</a>
+                            </div>
+                            <div class="col-span-2 text-slate-700 font-medium">Inner Ponto 4</div>
+                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
+                                <span>Digital, Prox e Teclado</span>
+                                <!-- Tooltip Content -->
+                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    <!-- Seta do Tooltip -->
+                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                </div>
+                            </div>
+                            <div class="col-span-2 relative">
+                                 <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
+                                    Não realizado
+                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                        <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Item 4: TopData T4 -->
+                        <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="TopData" data-biometria="Completo">
+                            <div class="col-span-1 flex justify-center relative">
+                                <div class="w-10 h-10 relative">
+                                    <img 
+                                        src="./assets/img_T4.png" 
+                                        alt="T4" 
+                                        title="Clique para ampliar"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        onclick="toggleZoom(this)"
+                                        onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=Top';"
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-span-2 font-semibold text-slate-900">
+                                <a href="https://www.topdata.com.br" target="_blank" class="hover:text-blue-600 transition-colors">TopData</a>
+                            </div>
+                            <div class="col-span-2 text-slate-700 font-medium">T4 e F4</div>
+                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
+                                <span>Facial, QRCode, Prox, Teclado</span>
+                                <!-- Tooltip Content -->
+                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    <!-- Seta do Tooltip -->
+                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                </div>
+                            </div>
+                            <div class="col-span-2 relative">
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help">
+                                    <i data-lucide="check-circle-2" class="w-3 h-3"></i> Completo
+                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                        <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Item 5: Evo Facial -->
+                        <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Evo" data-biometria="Completo">
+                            <div class="col-span-1 flex justify-center relative">
+                                <div class="w-10 h-10 relative">
+                                    <img 
+                                        src="assets/img_evofacial.png" 
+                                        alt="Evo Facial" 
+                                        title="Clique para ampliar"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        onclick="toggleZoom(this)"
+                                        onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=Evo';"
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-span-2 font-semibold text-slate-900">
+                                <a href="https://evosistemasinteligentes.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Evo</a>
+                            </div>
+                            <div class="col-span-2 text-slate-700 font-medium">Evo Facial</div>
+                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
+                                <span>Facial, QRCode, Prox, Teclado</span>
+                                <!-- Tooltip Content -->
+                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    <!-- Seta do Tooltip -->
+                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                </div>
+                            </div>
+                            <div class="col-span-2 relative">
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help">
+                                    <i data-lucide="check-circle-2" class="w-3 h-3"></i> Completo
+                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                        <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Item 6: Dixi Facial -->
+                        <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Dixi" data-biometria="Completo">
+                            <div class="col-span-1 flex justify-center relative">
+                                <div class="w-10 h-10 relative">
+                                    <img 
+                                        src="./assets/img_dixifacial.png" 
+                                        alt="Dixi Facial" 
+                                        title="Clique para ampliar"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        onclick="toggleZoom(this)"
+                                        onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=Dixi';"
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-span-2 font-semibold text-slate-900">
+                                <a href="https://web.dixiponto.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Dixi</a>
+                            </div>
+                            <div class="col-span-2 text-slate-700 font-medium">Dixi Facial</div>
+                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
+                                <span>Facial, QRCode, Prox, Teclado</span>
+                                <!-- Tooltip Content -->
+                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    <!-- Seta do Tooltip -->
+                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                </div>
+                            </div>
+                            <div class="col-span-2 relative">
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help">
+                                    <i data-lucide="check-circle-2" class="w-3 h-3"></i> Completo
+                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                        <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Item 7: Henry Facial 01 -->
+                        <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Henry" data-biometria="Completo">
+                            <div class="col-span-1 flex justify-center relative">
+                                <div class="w-10 h-10 relative">
+                                    <img 
+                                        src="./assets/img_henryface.png" 
+                                        alt="Henry Facial 01" 
+                                        title="Clique para ampliar"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        onclick="toggleZoom(this)"
+                                        onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=Hen';"
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-span-2 font-semibold text-slate-900">
+                                <a href="https://henry.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Henry</a>
+                            </div>
+                            <div class="col-span-2 text-slate-700 font-medium">Henry Facial 01</div>
+                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
+                                <span>Facial, QRCode, Prox, Teclado</span>
+                                <!-- Tooltip Content -->
+                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    <!-- Seta do Tooltip -->
+                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                </div>
+                            </div>
+                            <div class="col-span-2 relative">
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help">
+                                    <i data-lucide="check-circle-2" class="w-3 h-3"></i> Completo
+                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                        <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: REP físicos (REP-C) -->
+        <div class="card-section bg-white rounded-xl shadow-sm border border-slate-100">
+            <!-- Card Header -->
+            <div class="px-8 py-6 border-b border-slate-100 rounded-t-xl bg-white relative z-10">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="clock" class="w-6 h-6 text-blue-600 fill-blue-600/10"></i>
+                    <h3 class="text-lg font-bold text-blue-600">REPs físicos (REP-C)</h3>
+                </div>
+            </div>
+
+            <!-- Scrollable Container for Table -->
+            <!-- Adicionado touch-pan-x para melhor resposta ao toque -->
+            <div class="overflow-x-auto custom-scrollbar rounded-b-xl touch-pan-x pb-2">
+                <div class="min-w-[1024px]"> <!-- Largura mínima forçada para scroll -->
+                    <!-- Table Header -->
+                    <!-- Alterado border-slate-200 para border-slate-100 (Mais claro) -->
+                    <div class="grid grid-cols-12 px-8 py-4 bg-white text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 gap-2 relative z-0">
+                        <div class="col-span-1 text-center">Equip.</div>
+                        <div class="col-span-2">Fabricante</div>
+                        <div class="col-span-2">Modelo</div>
+                        <div class="col-span-5">Tipo de Identificação</div>
+                        <div class="col-span-2 text-right md:text-left">Gerenciamento Biométrico</div>
+                    </div>
+
+                    <!-- List Items -->
+                    <!-- Alterado divide-slate-200 para divide-slate-100 (Mais claro) -->
+                    <div class="divide-y divide-slate-100" id="list-repc">
+                        
+                        <!-- Item 1: REP iDClass -->
+                        <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Control ID" data-biometria="Não realizado">
+                            <div class="col-span-1 flex justify-center relative">
+                                <div class="w-10 h-10 relative">
+                                    <img 
+                                        src="assets/img_idclass373.png" 
+                                        alt="REP iDClass" 
+                                        title="Clique para ampliar"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        onclick="toggleZoom(this)"
+                                        onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=ID';"
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-span-2 font-semibold text-slate-900">
+                                <a href="https://www.controlid.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Control ID</a>
+                            </div>
+                            <div class="col-span-2 text-slate-700 font-medium">REP iDClass</div>
+                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
+                                <span>Digital, Prox e Teclado</span>
+                                <!-- Tooltip Content -->
+                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    <!-- Seta do Tooltip -->
+                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                </div>
+                            </div>
+                            <div class="col-span-2 relative">
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
+                                    Não realizado
+                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                        <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Item 2: REP iDClass 373 -->
+                        <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Control ID" data-biometria="Não realizado">
+                            <div class="col-span-1 flex justify-center relative">
+                                <div class="w-10 h-10 relative">
+                                    <img 
+                                        src="assets/img_idclass373.png" 
+                                        alt="REP iDClass 373" 
+                                        title="Clique para ampliar"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        onclick="toggleZoom(this)"
+                                        onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=ID';"
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-span-2 font-semibold text-slate-900">
+                                <a href="https://www.controlid.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Control ID</a>
+                            </div>
+                            <div class="col-span-2 text-slate-700 font-medium">REP iDClass 373</div>
+                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
+                                <span>Digital, Prox e Teclado</span>
+                                <!-- Tooltip Content -->
+                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    <!-- Seta do Tooltip -->
+                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                </div>
+                            </div>
+                            <div class="col-span-2 relative">
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
+                                    Não realizado
+                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                        <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Item 3: REP iDClass 671 -->
+                        <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Control ID" data-biometria="Não realizado">
+                            <div class="col-span-1 flex justify-center relative">
+                                 <div class="w-10 h-10 relative">
+                                    <img 
+                                        src="./assets/img_idclass671.png" 
+                                        alt="REP iDClass 671" 
+                                        title="Clique para ampliar"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        onclick="toggleZoom(this)"
+                                        onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=ID';"
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-span-2 font-semibold text-slate-900">
+                                <a href="https://www.controlid.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Control ID</a>
+                            </div>
+                            <div class="col-span-2 text-slate-700 font-medium">REP iDClass 671</div>
+                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
+                                <span>Digital, Prox e Teclado</span>
+                                <!-- Tooltip Content -->
+                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    <!-- Seta do Tooltip -->
+                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                </div>
+                            </div>
+                            <div class="col-span-2 relative">
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
+                                    Não realizado
+                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                        <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Item 4: REP iDClass 671 Facial -->
+                        <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Control ID" data-biometria="Não realizado">
+                            <div class="col-span-1 flex justify-center relative">
+                                <div class="w-10 h-10 relative">
+                                    <img 
+                                        src="./assets/img_idclass671.png" 
+                                        alt="REP iDClass 671 Facial" 
+                                        title="Clique para ampliar"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        onclick="toggleZoom(this)"
+                                        onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=ID';"
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-span-2 font-semibold text-slate-900">
+                                <a href="https://www.controlid.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Control ID</a>
+                            </div>
+                            <div class="col-span-2 text-slate-700 font-medium">REP iDClass 671 Facial</div>
+                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
+                                <span>Facial, Prox e Teclado</span>
+                                <!-- Tooltip Content -->
+                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    <!-- Seta do Tooltip -->
+                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                </div>
+                            </div>
+                            <div class="col-span-2 relative">
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
+                                    Não realizado
+                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                        <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State (Hidden by default) -->
+        <div id="empty-state" class="hidden flex flex-col items-center justify-center py-16 text-center animate-fade-in">
+            <!-- SVG Ilustrativo Personalizado -->
+            <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-48 h-48 mb-6">
+                <!-- Círculo de Fundo -->
+                <circle cx="100" cy="100" r="80" fill="#F8FAFC"/>
+                
+                <!-- Documento ao fundo -->
+                <rect x="65" y="55" width="70" height="90" rx="4" fill="white" stroke="#E2E8F0" stroke-width="3"/>
+                <path d="M80 75H120" stroke="#F1F5F9" stroke-width="3" stroke-linecap="round"/>
+                <path d="M80 90H120" stroke="#F1F5F9" stroke-width="3" stroke-linecap="round"/>
+                <path d="M80 105H100" stroke="#F1F5F9" stroke-width="3" stroke-linecap="round"/>
+                
+                <!-- Lupa -->
+                <circle cx="115" cy="115" r="32" fill="white" stroke="#94A3B8" stroke-width="4"/>
+                <path d="M138 138L160 160" stroke="#94A3B8" stroke-width="6" stroke-linecap="round"/>
+                
+                <!-- Detalhes internos da lupa (Vazio/X) -->
+                <path d="M105 105L125 125" stroke="#CBD5E1" stroke-width="3" stroke-linecap="round"/>
+                <path d="M125 105L105 125" stroke="#CBD5E1" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+            
+            <h3 class="text-xl font-bold text-slate-800 mb-2">Não encontramos nenhum registro para o(s) filtro(s) informado(s)!</h3>
+            <p class="text-slate-500">Por favor tente buscar por um filtro existente</p>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full pt-12  text-center">
+        <p class="text-sm text-slate-400">
+            Copyright © <a href="https://www.inspell.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Inspell Softwares</a> 2025
+        </p>
+    </footer>
+
+    <!-- Overlay "Fantasma" para o Zoom Mobile -->
+    <img id="zoom-overlay" class="hidden" onclick="closeMobileZoom()" alt="Zoom">
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Lógica para alternar filtros no mobile (Accordion)
+        function toggleFilters() {
+            const container = document.getElementById('filters-container');
+            
+            // Verifica estado atual baseado na classe
+            if (container.classList.contains('max-h-0')) {
+                // Expandir
+                container.classList.remove('max-h-0', 'opacity-0');
+                container.classList.add('max-h-[500px]', 'opacity-100'); // Usando valor fixo grande para permitir animação
+            } else {
+                // Recolher
+                container.classList.remove('max-h-[500px]', 'opacity-100');
+                container.classList.add('max-h-0', 'opacity-0');
+            }
+        }
+
+        // Lógica de Filtro Combinada
+        function applyFilters() {
+            const fabricanteSelecionado = document.getElementById('filterFabricante').value;
+            const biometriaSelecionada = document.getElementById('filterBiometria').value;
+            
+            const rows = document.querySelectorAll('.item-row');
+            let totalVisible = 0; // Contador de itens visíveis
+            
+            rows.forEach(row => {
+                const itemFabricante = row.getAttribute('data-fabricante');
+                const itemBiometria = row.getAttribute('data-biometria');
+                
+                const matchFabricante = (fabricanteSelecionado === 'todos' || itemFabricante === fabricanteSelecionado);
+                const matchBiometria = (biometriaSelecionada === 'todos' || itemBiometria === biometriaSelecionada);
+                
+                if (matchFabricante && matchBiometria) {
+                    row.classList.remove('hidden');
+                    totalVisible++;
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+
+            // Gerencia visibilidade dos cards (seções)
+            const cards = document.querySelectorAll('.card-section');
+            cards.forEach(card => {
+                const visibleRows = card.querySelectorAll('.item-row:not(.hidden)');
+                if (visibleRows.length === 0) {
+                    card.classList.add('hidden');
+                } else {
+                    card.classList.remove('hidden');
+                }
+            });
+
+            // Gerencia visibilidade do Empty State
+            const emptyState = document.getElementById('empty-state');
+            if (totalVisible === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+            }
+        }
+
+        // Variável para guardar a posição original da imagem
+        let originalImgRect = null;
+
+        // Nova Lógica de Zoom: Adaptativa
+        function toggleZoom(element) {
+            const isMobile = window.matchMedia("(max-width: 1024px)").matches;
+            
+            // Remove zoom de qualquer desktop ativo antes
+            document.querySelectorAll('img.img-zoom-desktop').forEach(img => {
+                if(img !== element) img.classList.remove('img-zoom-desktop');
+            });
+
+            if (isMobile) {
+                openMobileZoom(element);
+            } else {
+                // Toggle Desktop Simples
+                if (element.classList.contains('img-zoom-desktop')) {
+                    element.classList.remove('img-zoom-desktop');
+                } else {
+                    element.classList.add('img-zoom-desktop');
+                }
+            }
+        }
+
+        function openMobileZoom(img) {
+            const overlay = document.getElementById('zoom-overlay');
+            const rect = img.getBoundingClientRect();
+            originalImgRect = rect; // Guarda posição original
+
+            // 1. Configura Posição Inicial (Exatamente onde a imagem original está)
+            overlay.src = img.src;
+            overlay.style.transition = 'none'; // Desabilita transição para posicionamento instantâneo
+            overlay.style.top = `${rect.top}px`;
+            overlay.style.left = `${rect.left}px`;
+            overlay.style.width = `${rect.width}px`;
+            overlay.style.height = `${rect.height}px`;
+            overlay.style.transform = 'none';
+            overlay.style.borderRadius = '9999px'; // rounded-full
+            
+            overlay.classList.remove('hidden');
+            overlay.classList.add('active');
+
+            // 2. Força Reflow (Obrigatório para o navegador processar a posição inicial antes de animar)
+            overlay.offsetHeight; 
+
+            // 3. Anima para o Centro
+            overlay.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            overlay.style.top = '50%';
+            overlay.style.left = '50%';
+            overlay.style.transform = 'translate(-50%, -50%)'; // Centraliza
+            overlay.style.width = '80vw';
+            overlay.style.height = '80vw'; // Quadrado
+            overlay.style.maxWidth = '300px';
+            overlay.style.maxHeight = '300px';
+            overlay.style.borderRadius = '0.75rem'; // rounded-xl
+        }
+
+        function closeMobileZoom() {
+            const overlay = document.getElementById('zoom-overlay');
+            if (!originalImgRect) {
+                overlay.classList.add('hidden');
+                return;
+            }
+
+            // Anima de volta para a posição original
+            overlay.style.top = `${originalImgRect.top}px`;
+            overlay.style.left = `${originalImgRect.left}px`;
+            overlay.style.width = `${originalImgRect.width}px`;
+            overlay.style.height = `${originalImgRect.height}px`;
+            overlay.style.transform = 'none';
+            overlay.style.borderRadius = '9999px';
+
+            // Esconde após o fim da transição
+            setTimeout(() => {
+                overlay.classList.remove('active');
+                overlay.classList.add('hidden');
+            }, 300);
+        }
+        
+        // Fecha zoom se redimensionar a tela para evitar bugs visuais
+        window.addEventListener('resize', () => {
+             const overlay = document.getElementById('zoom-overlay');
+             if(overlay.classList.contains('active')) {
+                 overlay.classList.remove('active');
+                 overlay.classList.add('hidden');
+             }
+             document.querySelectorAll('img').forEach(img => img.classList.remove('img-zoom-desktop'));
+        });
+    </script>
+</body>
+</html>

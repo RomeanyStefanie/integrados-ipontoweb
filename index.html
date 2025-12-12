@@ -72,8 +72,8 @@
 
     <!-- Header Section -->
     <header class="bg-white w-full pt-8 pb-6 text-center flex flex-col items-center border-b border-slate-200 shadow-sm mb-8">
-        <!-- Logo com Link -->
-        <a href="https://www.inspell.com.br/ipontoconnect" target="_blank" class="hover:opacity-80 transition-opacity" title="Visitar site">
+        <!-- Logo com Link alterado para o site da Inspell -->
+        <a href="https://www.inspell.com.br" target="_blank" class="hover:opacity-80 transition-opacity" title="Visitar site da Inspell">
             <img 
                 src="./assets/logo_connect_01.png" 
                 alt="iPontoWeb Connect" 
@@ -112,7 +112,7 @@
                     <!-- Filtro Fabricante -->
                     <div class="flex items-center gap-3 bg-white p-2 rounded-lg shadow-sm border border-slate-200 flex-1 lg:flex-none">
                         <label for="filterFabricante" class="text-sm font-semibold text-slate-600 pl-2 whitespace-nowrap">
-                           <i data-lucide="factory" class="w-4 h-4 inline mr-1"></i> Fabricante:
+                           <i class="w-4 h-4 inline mr-1"></i> Fabricante:
                         </label>
                         <select id="filterFabricante" onchange="applyFilters()" class="bg-slate-50 border border-slate-300 text-slate-700 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full lg:w-40 p-2 outline-none cursor-pointer hover:bg-slate-100 transition-colors">
                             <option value="todos">Todos</option>
@@ -127,7 +127,7 @@
                     <!-- Filtro Biometria -->
                     <div class="flex items-center gap-3 bg-white p-2 rounded-lg shadow-sm border border-slate-200 flex-1 lg:flex-none">
                         <label for="filterBiometria" class="text-sm font-semibold text-slate-600 pl-2 whitespace-nowrap">
-                            <i data-lucide="scan-face" class="w-4 h-4 inline mr-1"></i> Gerenciamento Biométrico:
+                            <i  class="w-4 h-4 inline mr-1"></i> Gerenciamento Biométrico:
                         </label>
                         <select id="filterBiometria" onchange="applyFilters()" class="bg-slate-50 border border-slate-300 text-slate-700 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full lg:w-40 p-2 outline-none cursor-pointer hover:bg-slate-100 transition-colors">
                             <option value="todos">Todos</option>
@@ -141,7 +141,7 @@
             </div>
         </div>
 
-        <!-- Card 1: Coletores de Dados (REP-P / Equipamentos) -->
+        <!-- Card 1: Coletores de Dados (REP-P) -->
         <div class="card-section bg-white rounded-xl shadow-sm border border-slate-100">
             <!-- Card Header -->
             <div class="px-8 py-6 border-b border-slate-100 rounded-t-xl bg-white relative z-10">
@@ -152,33 +152,37 @@
             </div>
 
             <!-- Scrollable Container for Table -->
-            <!-- Adicionado touch-pan-x para melhor resposta ao toque -->
             <div class="overflow-x-auto custom-scrollbar rounded-b-xl touch-pan-x pb-2">
-                <div class="min-w-[1024px]"> <!-- Largura mínima forçada para scroll -->
+                <div class="min-w-[1024px]"> 
                     <!-- Table Header -->
-                    <!-- Alterado border-slate-200 para border-slate-100 (Mais claro) -->
-                    <div class="grid grid-cols-12 px-8 py-4 bg-white text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 gap-2 relative z-0">
-                        <div class="col-span-1 text-center">Equip.</div>
+                    <div class="grid grid-cols-12 px-8 py-4 bg-white text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 gap-2 relative z-20">
+                        <div class="col-span-2 text-center">Equipamento</div>
                         <div class="col-span-2">Fabricante</div>
                         <div class="col-span-2">Modelo</div>
-                        <div class="col-span-5">Tipo de Identificação</div>
+                        <!-- Tooltip com abertura INFERIOR -->
+                        <div class="col-span-4 relative group cursor-help flex items-center gap-1">
+                            Tipo de Identificação
+                            <i data-lucide="info" class="w-3 h-3 text-slate-400"></i>
+                            <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-b-slate-800"></div>
+                            </div>
+                        </div>
                         <div class="col-span-2 text-right md:text-left">Gerenciamento Biométrico</div>
                     </div>
 
                     <!-- List Items -->
-                    <!-- Alterado divide-slate-200 para divide-slate-100 (Mais claro) -->
                     <div class="divide-y divide-slate-100" id="list-repp">
                         
                         <!-- Item 1: ControlID iDFace -->
                         <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Control ID" data-biometria="Completo">
-                            <div class="col-span-1 flex justify-center relative">
-                                <!-- Wrapper fixo para preservar espaço -->
+                            <div class="col-span-2 flex justify-center relative">
                                 <div class="w-10 h-10 relative">
                                     <img 
                                         src="./assets/img_idface.png" 
                                         alt="iDFace" 
                                         title="Clique para ampliar"
-                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md origin-left"
                                         onclick="toggleZoom(this)"
                                         onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=ID';"
                                     >
@@ -188,19 +192,12 @@
                                 <a href="https://www.controlid.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Control ID</a>
                             </div>
                             <div class="col-span-2 text-slate-700 font-medium">iDFace</div>
-                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
-                                <span>Facial, QRCode, Prox, Teclado</span>
-                                <!-- Tooltip Content -->
-                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                    <!-- Seta do Tooltip -->
-                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
-                                </div>
+                            <div class="col-span-4 text-base text-slate-600">
+                                Facial, QRCode, Prox, Teclado
                             </div>
                             <div class="col-span-2 relative">
-                                <!-- Badge com Tooltip Completo -->
-                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help">
-                                    <i data-lucide="check-circle-2" class="w-3 h-3"></i> Completo
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-base font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i> Completo
                                     <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                                         <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
@@ -211,13 +208,13 @@
 
                         <!-- Item 2: ControlID iDFlex -->
                         <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Control ID" data-biometria="Não realizado">
-                            <div class="col-span-1 flex justify-center relative">
+                            <div class="col-span-2 flex justify-center relative">
                                 <div class="w-10 h-10 relative">
                                     <img 
                                         src="assets/img_idflex.png" 
                                         alt="iDFlex" 
                                         title="Clique para ampliar"
-                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md origin-left"
                                         onclick="toggleZoom(this)"
                                         onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=ID';"
                                     >
@@ -227,17 +224,11 @@
                                 <a href="https://www.controlid.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Control ID</a>
                             </div>
                             <div class="col-span-2 text-slate-700 font-medium">iDFlex</div>
-                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
-                                <span>Digital, Prox e Teclado</span>
-                                <!-- Tooltip Content -->
-                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                    <!-- Seta do Tooltip -->
-                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
-                                </div>
+                            <div class="col-span-4 text-base text-slate-600">
+                                Digital, Prox e Teclado
                             </div>
                             <div class="col-span-2 relative">
-                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-base font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
                                     Não realizado
                                     <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -249,13 +240,13 @@
 
                         <!-- Item 3: TopData Inner Ponto 4 -->
                         <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="TopData" data-biometria="Não realizado">
-                            <div class="col-span-1 flex justify-center relative">
+                            <div class="col-span-2 flex justify-center relative">
                                 <div class="w-10 h-10 relative">
                                     <img 
                                         src="assets/img_inner4.png" 
                                         alt="Inner Ponto 4" 
                                         title="Clique para ampliar"
-                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md origin-left"
                                         onclick="toggleZoom(this)"
                                         onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=Top';"
                                     >
@@ -265,17 +256,11 @@
                                 <a href="https://www.topdata.com.br" target="_blank" class="hover:text-blue-600 transition-colors">TopData</a>
                             </div>
                             <div class="col-span-2 text-slate-700 font-medium">Inner Ponto 4</div>
-                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
-                                <span>Digital, Prox e Teclado</span>
-                                <!-- Tooltip Content -->
-                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                    <!-- Seta do Tooltip -->
-                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
-                                </div>
+                            <div class="col-span-4 text-base text-slate-600">
+                                Digital, Prox e Teclado
                             </div>
                             <div class="col-span-2 relative">
-                                 <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
+                                 <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-base font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
                                     Não realizado
                                     <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -287,13 +272,13 @@
 
                         <!-- Item 4: TopData T4 -->
                         <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="TopData" data-biometria="Completo">
-                            <div class="col-span-1 flex justify-center relative">
+                            <div class="col-span-2 flex justify-center relative">
                                 <div class="w-10 h-10 relative">
                                     <img 
                                         src="./assets/img_T4.png" 
                                         alt="T4" 
                                         title="Clique para ampliar"
-                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md origin-left"
                                         onclick="toggleZoom(this)"
                                         onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=Top';"
                                     >
@@ -302,19 +287,13 @@
                             <div class="col-span-2 font-semibold text-slate-900">
                                 <a href="https://www.topdata.com.br" target="_blank" class="hover:text-blue-600 transition-colors">TopData</a>
                             </div>
-                            <div class="col-span-2 text-slate-700 font-medium">T4 e F4</div>
-                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
-                                <span>Facial, QRCode, Prox, Teclado</span>
-                                <!-- Tooltip Content -->
-                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                    <!-- Seta do Tooltip -->
-                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
-                                </div>
+                            <div class="col-span-2 text-slate-700 font-medium">T4</div>
+                            <div class="col-span-4 text-base text-slate-600">
+                                Facial, QRCode, Prox, Teclado
                             </div>
                             <div class="col-span-2 relative">
-                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help">
-                                    <i data-lucide="check-circle-2" class="w-3 h-3"></i> Completo
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-base font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i> Completo
                                     <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                                         <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
@@ -325,13 +304,13 @@
 
                         <!-- Item 5: Evo Facial -->
                         <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Evo" data-biometria="Completo">
-                            <div class="col-span-1 flex justify-center relative">
+                            <div class="col-span-2 flex justify-center relative">
                                 <div class="w-10 h-10 relative">
                                     <img 
                                         src="assets/img_evofacial.png" 
                                         alt="Evo Facial" 
                                         title="Clique para ampliar"
-                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md origin-left"
                                         onclick="toggleZoom(this)"
                                         onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=Evo';"
                                     >
@@ -341,18 +320,12 @@
                                 <a href="https://evosistemasinteligentes.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Evo</a>
                             </div>
                             <div class="col-span-2 text-slate-700 font-medium">Evo Facial</div>
-                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
-                                <span>Facial, QRCode, Prox, Teclado</span>
-                                <!-- Tooltip Content -->
-                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                    <!-- Seta do Tooltip -->
-                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
-                                </div>
+                            <div class="col-span-4 text-base text-slate-600">
+                                Facial, QRCode, Prox, Teclado
                             </div>
                             <div class="col-span-2 relative">
-                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help">
-                                    <i data-lucide="check-circle-2" class="w-3 h-3"></i> Completo
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-base font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i> Completo
                                     <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                                         <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
@@ -363,13 +336,13 @@
 
                         <!-- Item 6: Dixi Facial -->
                         <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Dixi" data-biometria="Completo">
-                            <div class="col-span-1 flex justify-center relative">
+                            <div class="col-span-2 flex justify-center relative">
                                 <div class="w-10 h-10 relative">
                                     <img 
                                         src="./assets/img_dixifacial.png" 
                                         alt="Dixi Facial" 
                                         title="Clique para ampliar"
-                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md origin-left"
                                         onclick="toggleZoom(this)"
                                         onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=Dixi';"
                                     >
@@ -379,18 +352,12 @@
                                 <a href="https://web.dixiponto.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Dixi</a>
                             </div>
                             <div class="col-span-2 text-slate-700 font-medium">Dixi Facial</div>
-                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
-                                <span>Facial, QRCode, Prox, Teclado</span>
-                                <!-- Tooltip Content -->
-                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                    <!-- Seta do Tooltip -->
-                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
-                                </div>
+                            <div class="col-span-4 text-base text-slate-600">
+                                Facial, QRCode, Prox, Teclado
                             </div>
                             <div class="col-span-2 relative">
-                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help">
-                                    <i data-lucide="check-circle-2" class="w-3 h-3"></i> Completo
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-base font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i> Completo
                                     <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                                         <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
@@ -401,13 +368,13 @@
 
                         <!-- Item 7: Henry Facial 01 -->
                         <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Henry" data-biometria="Completo">
-                            <div class="col-span-1 flex justify-center relative">
+                            <div class="col-span-2 flex justify-center relative">
                                 <div class="w-10 h-10 relative">
                                     <img 
                                         src="./assets/img_henryface.png" 
                                         alt="Henry Facial 01" 
                                         title="Clique para ampliar"
-                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md origin-left"
                                         onclick="toggleZoom(this)"
                                         onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=Hen';"
                                     >
@@ -417,18 +384,12 @@
                                 <a href="https://henry.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Henry</a>
                             </div>
                             <div class="col-span-2 text-slate-700 font-medium">Henry Facial 01</div>
-                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
-                                <span>Facial, QRCode, Prox, Teclado</span>
-                                <!-- Tooltip Content -->
-                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                    <!-- Seta do Tooltip -->
-                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
-                                </div>
+                            <div class="col-span-4 text-base text-slate-600">
+                                Facial, QRCode, Prox, Teclado
                             </div>
                             <div class="col-span-2 relative">
-                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help">
-                                    <i data-lucide="check-circle-2" class="w-3 h-3"></i> Completo
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-base font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i> Completo
                                     <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                                         <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
@@ -453,32 +414,37 @@
             </div>
 
             <!-- Scrollable Container for Table -->
-            <!-- Adicionado touch-pan-x para melhor resposta ao toque -->
             <div class="overflow-x-auto custom-scrollbar rounded-b-xl touch-pan-x pb-2">
                 <div class="min-w-[1024px]"> <!-- Largura mínima forçada para scroll -->
                     <!-- Table Header -->
-                    <!-- Alterado border-slate-200 para border-slate-100 (Mais claro) -->
-                    <div class="grid grid-cols-12 px-8 py-4 bg-white text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 gap-2 relative z-0">
-                        <div class="col-span-1 text-center">Equip.</div>
+                    <div class="grid grid-cols-12 px-8 py-4 bg-white text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 gap-2 relative z-20">
+                        <div class="col-span-2 text-center">Equipamento</div>
                         <div class="col-span-2">Fabricante</div>
                         <div class="col-span-2">Modelo</div>
-                        <div class="col-span-5">Tipo de Identificação</div>
+                        <!-- Tooltip movido para o cabeçalho -->
+                        <div class="col-span-4 relative group cursor-help flex items-center gap-1">
+                            Tipo de Identificação
+                            <i data-lucide="info" class="w-3 h-3 text-slate-400"></i>
+                            <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-b-slate-800"></div>
+                            </div>
+                        </div>
                         <div class="col-span-2 text-right md:text-left">Gerenciamento Biométrico</div>
                     </div>
 
                     <!-- List Items -->
-                    <!-- Alterado divide-slate-200 para divide-slate-100 (Mais claro) -->
                     <div class="divide-y divide-slate-100" id="list-repc">
                         
                         <!-- Item 1: REP iDClass -->
                         <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Control ID" data-biometria="Não realizado">
-                            <div class="col-span-1 flex justify-center relative">
+                            <div class="col-span-2 flex justify-center relative">
                                 <div class="w-10 h-10 relative">
                                     <img 
-                                        src="assets/img_idclass373.png" 
+                                        src="assets/img_idclass.png" 
                                         alt="REP iDClass" 
                                         title="Clique para ampliar"
-                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md origin-left"
                                         onclick="toggleZoom(this)"
                                         onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=ID';"
                                     >
@@ -488,55 +454,11 @@
                                 <a href="https://www.controlid.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Control ID</a>
                             </div>
                             <div class="col-span-2 text-slate-700 font-medium">REP iDClass</div>
-                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
-                                <span>Digital, Prox e Teclado</span>
-                                <!-- Tooltip Content -->
-                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                    <!-- Seta do Tooltip -->
-                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
-                                </div>
+                            <div class="col-span-4 text-base text-slate-600">
+                                Digital, Prox e Teclado
                             </div>
                             <div class="col-span-2 relative">
-                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
-                                    Não realizado
-                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                        <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
-                                    </div>
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Item 2: REP iDClass 373 -->
-                        <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Control ID" data-biometria="Não realizado">
-                            <div class="col-span-1 flex justify-center relative">
-                                <div class="w-10 h-10 relative">
-                                    <img 
-                                        src="assets/img_idclass373.png" 
-                                        alt="REP iDClass 373" 
-                                        title="Clique para ampliar"
-                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
-                                        onclick="toggleZoom(this)"
-                                        onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=ID';"
-                                    >
-                                </div>
-                            </div>
-                            <div class="col-span-2 font-semibold text-slate-900">
-                                <a href="https://www.controlid.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Control ID</a>
-                            </div>
-                            <div class="col-span-2 text-slate-700 font-medium">REP iDClass 373</div>
-                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
-                                <span>Digital, Prox e Teclado</span>
-                                <!-- Tooltip Content -->
-                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                    <!-- Seta do Tooltip -->
-                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
-                                </div>
-                            </div>
-                            <div class="col-span-2 relative">
-                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-base font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
                                     Não realizado
                                     <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -548,13 +470,13 @@
 
                         <!-- Item 3: REP iDClass 671 -->
                         <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Control ID" data-biometria="Não realizado">
-                            <div class="col-span-1 flex justify-center relative">
+                            <div class="col-span-2 flex justify-center relative">
                                  <div class="w-10 h-10 relative">
                                     <img 
                                         src="./assets/img_idclass671.png" 
                                         alt="REP iDClass 671" 
                                         title="Clique para ampliar"
-                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md origin-left"
                                         onclick="toggleZoom(this)"
                                         onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=ID';"
                                     >
@@ -564,17 +486,11 @@
                                 <a href="https://www.controlid.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Control ID</a>
                             </div>
                             <div class="col-span-2 text-slate-700 font-medium">REP iDClass 671</div>
-                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
-                                <span>Digital, Prox e Teclado</span>
-                                <!-- Tooltip Content -->
-                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                    <!-- Seta do Tooltip -->
-                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
-                                </div>
+                            <div class="col-span-4 text-base text-slate-600">
+                                Digital, Prox e Teclado
                             </div>
                             <div class="col-span-2 relative">
-                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-base font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
                                     Não realizado
                                     <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -586,13 +502,13 @@
 
                         <!-- Item 4: REP iDClass 671 Facial -->
                         <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Control ID" data-biometria="Não realizado">
-                            <div class="col-span-1 flex justify-center relative">
+                            <div class="col-span-2 flex justify-center relative">
                                 <div class="w-10 h-10 relative">
                                     <img 
-                                        src="./assets/img_idclass671.png" 
+                                        src="./assets/img_idclass671facial.png" 
                                         alt="REP iDClass 671 Facial" 
                                         title="Clique para ampliar"
-                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md origin-left"
                                         onclick="toggleZoom(this)"
                                         onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=ID';"
                                     >
@@ -602,17 +518,82 @@
                                 <a href="https://www.controlid.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Control ID</a>
                             </div>
                             <div class="col-span-2 text-slate-700 font-medium">REP iDClass 671 Facial</div>
-                            <div class="col-span-5 text-sm text-slate-600 relative group cursor-help">
-                                <span>Facial, Prox e Teclado</span>
-                                <!-- Tooltip Content -->
-                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                    <!-- Seta do Tooltip -->
-                                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
-                                </div>
+                            <div class="col-span-4 text-base text-slate-600">
+                                Facial, Prox e Teclado
                             </div>
                             <div class="col-span-2 relative">
-                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-base font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
+                                    Não realizado
+                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                        <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Relógio Alternativo (REP-A) -->
+        <div class="card-section bg-white rounded-xl shadow-sm border border-slate-100">
+            <!-- Card Header -->
+            <div class="px-8 py-6 border-b border-slate-100 rounded-t-xl bg-white relative z-10">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="timer" class="w-6 h-6 text-blue-600 fill-blue-600/10"></i>
+                    <h3 class="text-lg font-bold text-blue-600">Relógio Alternativo (REP-A)</h3>
+                </div>
+            </div>
+
+            <!-- Scrollable Container for Table -->
+            <div class="overflow-x-auto custom-scrollbar rounded-b-xl touch-pan-x pb-2">
+                <div class="min-w-[1024px]"> 
+                    <!-- Table Header -->
+                    <div class="grid grid-cols-12 px-8 py-4 bg-white text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 gap-2 relative z-20">
+                        <div class="col-span-2 text-center">Equipamento</div>
+                        <div class="col-span-2">Fabricante</div>
+                        <div class="col-span-3">Modelo</div>
+                        <!-- Tooltip com abertura INFERIOR -->
+                        <div class="col-span-3 relative group cursor-help flex items-center gap-1">
+                            Tipo de Identificação
+                            <i data-lucide="info" class="w-3 h-3 text-slate-400"></i>
+                            <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-b-slate-800"></div>
+                            </div>
+                        </div>
+                        <div class="col-span-2 text-right md:text-left">Gerenciamento Biométrico</div>
+                    </div>
+
+                    <!-- List Items -->
+                    <div class="divide-y divide-slate-100" id="list-repa">
+                        
+                        <!-- Item 1: REP iDClass 373 -->
+                        <div class="item-row grid grid-cols-12 px-8 py-5 items-center hover:bg-slate-50 transition-colors gap-2" data-fabricante="Control ID" data-biometria="Não realizado">
+                            <div class="col-span-2 flex justify-center relative">
+                                <div class="w-10 h-10 relative">
+                                    <img 
+                                        src="assets/img_idclass373.png" 
+                                        alt="REP iDClass 373" 
+                                        title="Clique para ampliar"
+                                        class="w-full h-full object-contain rounded-full border border-slate-100 bg-white transition-all cursor-pointer hover:shadow-md origin-left"
+                                        onclick="toggleZoom(this)"
+                                        onerror="this.onerror=null; this.src='https://placehold.co/40x40/e2e8f0/3b82f6?text=ID';"
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-span-2 font-semibold text-slate-900">
+                                <a href="https://www.controlid.com.br" target="_blank" class="hover:text-blue-600 transition-colors">Control ID</a>
+                            </div>
+                            <div class="col-span-3 text-slate-700 font-medium">REP iDClass 373</div>
+                            <!-- Tooltip removido da linha -->
+                            <div class="col-span-3 text-base text-slate-600">
+                                Digital, Prox e Teclado
+                            </div>
+                            <div class="col-span-2 relative">
+                                <span class="group relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-base font-medium bg-slate-100 text-slate-500 border border-slate-200 cursor-help">
                                     Não realizado
                                     <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-lg hidden group-hover:block z-[60] text-center font-normal normal-case pointer-events-none">
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
